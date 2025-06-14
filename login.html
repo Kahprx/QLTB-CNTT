@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng Nhập</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    :root {
+      --accent: #4CAF50;
+      --accent-hover: #43a047;
+      --text-color: #333;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f2f5;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: url('ungbuou.png') no-repeat center center fixed;
+      background-size: cover;
+      filter: brightness(0.6) blur(3px);
+      transform: scale(1.05);
+      z-index: -2;
+      animation: bgZoom 30s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgZoom {
+      to { transform: scale(1.08); }
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
+      background-size: 80px 80px, 120px 120px;
+      animation: sparkle 20s linear infinite;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    @keyframes sparkle {
+      0% { background-position: 0 0, 0 0; }
+      100% { background-position: 100px 200px, -100px 100px; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 1rem;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      width: 80px;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.75rem;
+      color: var(--text-color);
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 1rem;
+      padding-right: 3rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.75rem;
+      background: #fff;
+      transition: all 0.3s;
+    }
+
+    .input-group input:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      padding: 0 0.3rem;
+      color: #999;
+      transition: 0.2s;
+      pointer-events: none;
+    }
+
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label {
+      top: -0.6rem;
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    .input-group i {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 0.75rem;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background: var(--accent-hover);
+    }
+
+    .link {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      color: #444;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .link:hover {
+      color: var(--accent);
+    }
+
+    .form-wrapper > div {
+      display: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .form-wrapper .login-form {
+      display: block;
+    }
+
+    .form-wrapper.show-forgot .login-form {
+      display: none;
+    }
+
+    .form-wrapper.show-forgot .forgot-form {
+      display: block;
+    }
+
+    .notification {
+      display: none;
+      position: absolute;
+      top: -60px;
+      left: 0;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      z-index: 10;
+      animation: slideDownFade 0.6s ease-out forwards;
+      text-align: center;
+    }
+
+    .notification.success {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .notification.error {
+      background-color: #f44336;
+      color: white;
+    }
+
+    @keyframes slideDownFade {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div id="notification" class="notification"></div>
+
+    <img src="logo.png" alt="Logo" class="logo">
+
+    <div class="form-wrapper" id="formWrapper">
+      <!-- ĐĂNG NHẬP -->
+      <div class="login-form">
+        <h2>Đăng Nhập</h2>
+        <form action="login_process.php" method="post">
+          <div class="input-group">
+            <input type="text" name="username" placeholder=" " required>
+            <label>Tên đăng nhập</label>
+            <i class="fa fa-user"></i>
+          </div>
+          <div class="input-group">
+            <input type="password" name="password" placeholder=" " required>
+            <label>Mật khẩu</label>
+            <i class="fa fa-lock"></i>
+          </div>
+          <input type="submit" value="Đăng Nhập">
+        </form>
+        <span class="link" onclick="toggleForgot(true)">Quên mật khẩu?</span>
+      </div>
+
+      <!-- QUÊN MẬT KHẨU -->
+      <div class="forgot-form">
+        <h2>Quên Mật Khẩu</h2>
+        <form id="forgotForm">
+          <div class="input-group">
+            <input type="email" name="email" id="emailInput" placeholder=" " required>
+            <label>Email khôi phục</label>
+            <i class="fa fa-envelope"></i>
+          </div>
+          <input type="submit" value="Gửi liên kết khôi phục">
+        </form>
+        <span class="link" onclick="toggleForgot(false)">← Quay lại đăng nhập</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function toggleForgot(showForgot) {
+    const wrapper = document.getElementById('formWrapper');
+    wrapper.classList.toggle('show-forgot', showForgot);
+  }
+
+  function showNotification(message, type = 'success') {
+    const notif = document.getElementById('notification');
+    notif.textContent = message;
+    notif.className = `notification ${type}`;
+    notif.style.display = 'block';
+
+    setTimeout(() => {
+      notif.style.display = 'none';
+    }, 5000);
+  }
+
+  document.getElementById('forgotForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const email = document.getElementById('emailInput').value.trim();
+    if (!email) return;
+
+    // ✅ Hiện ngay phản hồi UI (nhanh)
+    showNotification('Đang gửi email khôi phục...', 'success');
+
+    // Gửi request đến PHP xử lý
+    fetch('forgot_process.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `email=${encodeURIComponent(email)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        showNotification('✅ Liên kết đã được gửi tới email của bạn.', 'success');
+
+        // Hiệu ứng UI
+        const forgotForm = document.querySelector('.forgot-form');
+        document.getElementById('emailInput').value = '';
+        forgotForm.style.opacity = '0.6';
+
+        const waitMsg = document.createElement('p');
+        waitMsg.innerText = '👉 Vui lòng kiểm tra hộp thư trong 30 giây tới.';
+        waitMsg.style.color = '#4CAF50';
+        waitMsg.style.marginTop = '15px';
+        waitMsg.style.fontWeight = 'bold';
+        waitMsg.style.fontSize = '0.9rem';
+        forgotForm.appendChild(waitMsg);
+
+        // Tự quay về đăng nhập
+        setTimeout(() => {
+          toggleForgot(false);
+          forgotForm.style.opacity = '1';
+          waitMsg.remove();
+        }, 5000);
+      } else {
+        showNotification(data.message || 'Gửi thất bại.', 'error');
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      showNotification('⚠️ Không thể kết nối máy chủ.', 'error');
+    });
+  });
+</script>
+
+
+</body>
+</html>
+
